@@ -30,7 +30,7 @@
 
 const express = require('express')
 const cors = require('cors')
-const bodyParse = require('body-parse')
+const bodyParser = require('body-parser')
 const { request } = require('http')
 const { response } = require('express')
 
@@ -63,6 +63,18 @@ app.use((request,response, next)=>{
     //retorna todos os dados de alunos
     app.get('/v1/lion-school/alunos',cors(),async function(request,response){
 
+        let controllerAluno = require('./controller/controller_aluno.js')
+
+        let dados = await controllerAluno.selecionarTodosAlunos()
+
+        if(dados){
+            response.json(dados)
+            response.status(200)
+        }
+        else{
+            response.json()
+            response.status(404)
+        }
 
     })
 
@@ -91,3 +103,7 @@ app.use((request,response, next)=>{
 
     })
 //_________________________________________________________________________________________________________________________________________________________________//
+
+app.listen(8080,function(){
+    console.log("server aguardando requisicoes ");
+})
