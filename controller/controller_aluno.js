@@ -7,9 +7,35 @@
  * _____________________________________________________________________________________________________________________________________________________________*/
 
 
+    // import do arquivo de acesso ao banco de dados 
+    var alunoDAO = require('../model/DAO/alunoDAO.js')
+//______________________________________________________________________________________________________________________________________
 //recive app data and send to model
-const inserirAluno = function(dadosAluno){
+const inserirAluno = async function(dadosAluno){
 
+   let message = require('./modulo/config.js')
+
+   if(dadosAluno.nome == ''            || dadosAluno.nome == undefined || dadosAluno.nome.length > 100 ||
+      dadosAluno.cpf == ''             || dadosAluno.cpf == undefined  || dadosAluno.cpf.length > 18   ||
+      dadosAluno.rg == ''              || dadosAluno.rg == undefined   || dadosAluno.rg.length > 15    ||
+      dadosAluno.data_nascimento == '' || dadosAluno.data_nascimento == undefined                      ||
+      dadosAluno.email ==''            || dadosAluno.email == undefined || dadosAluno.email.length > 250
+      ){
+         message.ERRO_REQUIRED_DATA
+      }
+      else{
+         let status =  await alunoDAO.insertAluno(dadosAluno)
+         console.log(status)
+
+         if(status){
+            return message.MESSAGE_CREATED_ITEM
+         }
+         else{
+            return message.ERRO_INTERNAL_SERVER
+         }
+         
+      }
+     
 }
 
 //recebe dados do app e encia para atualizar um existente
@@ -22,9 +48,6 @@ const deletarAluno = function(id){
 }
 //aretorna alunos
 const selecionarTodosAlunos = async function(){
-
-    // import do arquivo de acesso ao banco de dados 
-    let alunoDAO = require('../model/DAO/alunoDAO.js')
 
     let dadosAluno = await alunoDAO.selectAllAluno()
 
@@ -48,7 +71,7 @@ const buscarIdAluno = function(id){
 }
 
 module.exports ={
-    selecionarTodosAlunos
+    selecionarTodosAlunos, inserirAluno
 }
 
 

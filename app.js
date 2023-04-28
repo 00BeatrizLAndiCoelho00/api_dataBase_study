@@ -31,9 +31,15 @@
 const express = require('express')
 const cors = require('cors')
 const bodyParser = require('body-parser')
+const bodyJSON = bodyParser.json()
 const { request } = require('http')
 const { response } = require('express')
 
+
+
+//_____________________________________________IMPORTS LOCAL DATA__________________________________________________________________________________________
+
+var controllerAluno = require('./controller/controller_aluno.js')
 //____________________________________________CRIA O IBJETO_______________________________________________________________________________________________________
 
 const app = express()
@@ -49,6 +55,7 @@ app.use((request,response, next)=>{
     next()
 })
 
+
 //______________________________________________________ENDPOINTS BANCO DE DADOS________________________________________________________________________________________________// 
 
 /*CRUD 
@@ -59,11 +66,9 @@ app.use((request,response, next)=>{
 */
 
 
-
+//_________________________________________________________________________________________________________________________________________________________________//
     //retorna todos os dados de alunos
     app.get('/v1/lion-school/alunos',cors(),async function(request,response){
-
-        let controllerAluno = require('./controller/controller_aluno.js')
 
         let dados = await controllerAluno.selecionarTodosAlunos()
 
@@ -78,25 +83,36 @@ app.use((request,response, next)=>{
 
     })
 
+//_________________________________________________________________________________________________________________________________________________________________//
     //retorna dados do aluno pelo id
     app.get('/v1/lion-school/aluno/:id',cors(),async function(request,response){
 
 
     })
 
+//_________________________________________________________________________________________________________________________________________________________________//
     //Insere um novo aluno
-    app.post('/v1/lion-school/aluno/',cors(),async function(request,response){
+    app.post('/v1/lion-school/aluno/',cors(), bodyJSON ,async function(request,response){
+
+        let dadosBody = request.body
+
+        let resultInsertDados = await controllerAluno.inserirAluno(dadosBody)
+
+        response.status(resultInsertDados.status)
+      
+        response.json(resultInsertDados)
 
 
     })
 
+//_________________________________________________________________________________________________________________________________________________________________//
     //atualiza um aluno pelo id
     app.put('/v1/lion-school/aluno/:id',cors(),async function(request,response){
 
-
+       
     })
 
-
+//_________________________________________________________________________________________________________________________________________________________________//
     //exclui um aluno pelo id
     app.delete('/v1/lion-school/aluno/:id',cors(),async function(request,response){
 
